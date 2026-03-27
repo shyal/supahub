@@ -51,8 +51,23 @@ graph TB
 | DB backup + sync | GitHub API (private repo) | Free |
 | Version history | Git commits on the SQLite file | Free |
 | Custom domain | Point your domain to GitHub Pages once | Free |
+| Auth | GitHub PAT (backed by GitHub's 2FA) | Free |
 
 Map your domain to your GitHub Pages user site once (`yourdomain.com` → `username.github.io`), and every project repo automatically gets its own URL at `yourdomain.com/repo-name`. No DNS changes per app. No hosting config. Just push code.
+
+### Security
+
+Auth is a GitHub Personal Access Token. That means your app is protected by GitHub's full security stack — 2FA, session management, token expiration, fine-grained scopes — without writing a single line of auth code. The same token that authenticates you also syncs your data to a private repo that only your GitHub account can access. No passwords to manage, no auth server to maintain, no attack surface beyond GitHub itself.
+
+```mermaid
+graph LR
+    U["You"] -->|"PAT + 2FA"| GH["GitHub"]
+    GH -->|"Verify identity"| App["Your App"]
+    GH -->|"Read/write access"| Data["Private Repo<br/>(encrypted at rest)"]
+
+    style GH fill:#6e40c9,color:#fff
+    style Data fill:#0d1117,color:#fff,stroke:#30363d
+```
 
 ## The Upgrade Path
 
