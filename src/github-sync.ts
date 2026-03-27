@@ -58,7 +58,7 @@ export function getSyncStatus() {
 
 function headers(): Record<string, string> {
   return {
-    Authorization: `Bearer ${currentToken}`,
+    Authorization: `token ${currentToken}`,
     Accept: "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
   };
