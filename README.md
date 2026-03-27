@@ -2,6 +2,80 @@
 
 Drop-in Supabase replacement backed by SQLite WASM. Same API, zero backend, free forever.
 
+## The Problem
+
+I build a lot of personal apps. My workflow was always: create a Supabase project, build the frontend, deploy. But Supabase's free tier limits how many active projects you can have. I kept hitting the wall — pausing old projects to start new ones, or paying for capacity I didn't need.
+
+I wanted something simpler: **start building immediately with the Supabase API I already know, get a fully working app with zero cost, and upgrade to real Supabase later if the project ever needs multi-user support.**
+
+supahub is that starting point. It's the same API, backed by SQLite in your browser instead of a Postgres server. When you're ready to scale, swap one import and you're on Supabase. Until then, everything is free.
+
+## The Free Stack
+
+When you combine supahub with GitHub Pages, you get a complete app platform for $0/month:
+
+```mermaid
+graph TB
+    subgraph "Your Domain (e.g. yourdomain.com)"
+        A["yourdomain.com/app-1"] --> GH1["GitHub Pages<br/>repo: app-1"]
+        B["yourdomain.com/app-2"] --> GH2["GitHub Pages<br/>repo: app-2"]
+        C["yourdomain.com/app-3"] --> GH3["GitHub Pages<br/>repo: app-3"]
+    end
+
+    subgraph "Free Infrastructure"
+        GH1 & GH2 & GH3 --> HTTPS["HTTPS<br/>(automatic)"]
+        GH1 & GH2 & GH3 --> CI["GitHub Actions<br/>(build & deploy)"]
+    end
+
+    subgraph "Per-App Database"
+        GH1 -. "sync" .-> D1["Private Repo<br/>app-1-data<br/>(SQLite file)"]
+        GH2 -. "sync" .-> D2["Private Repo<br/>app-2-data<br/>(SQLite file)"]
+        GH3 -. "sync" .-> D3["Private Repo<br/>app-3-data<br/>(SQLite file)"]
+    end
+
+    style A fill:#22c55e,color:#000
+    style B fill:#22c55e,color:#000
+    style C fill:#22c55e,color:#000
+```
+
+**What you get for free — per app, unlimited apps:**
+
+| Layer | Provider | Cost |
+|-------|----------|------|
+| Git repo | GitHub | Free |
+| Frontend hosting | GitHub Pages | Free |
+| HTTPS | GitHub Pages | Free (automatic) |
+| CI/CD | GitHub Actions | Free |
+| Database | supahub (SQLite WASM in browser) | Free |
+| DB persistence | OPFS / IndexedDB | Free |
+| DB backup + sync | GitHub API (private repo) | Free |
+| Version history | Git commits on the SQLite file | Free |
+| Custom domain | Point your domain to GitHub Pages once | Free |
+
+Map your domain to your GitHub Pages user site once (`yourdomain.com` → `username.github.io`), and every project repo automatically gets its own URL at `yourdomain.com/repo-name`. No DNS changes per app. No hosting config. Just push code.
+
+## The Upgrade Path
+
+supahub uses the exact same API as `@supabase/supabase-js`. This is intentional — your service layer code is a migration-ready asset, not throwaway prototyping code.
+
+```mermaid
+graph LR
+    A["Personal Project<br/><b>supahub</b><br/>SQLite in browser<br/>$0/month"] -->|"Swap one import"| B["Multi-User App<br/><b>Supabase</b><br/>Postgres in cloud<br/>Free tier or paid"]
+
+    style A fill:#3b82f6,color:#fff
+    style B fill:#22c55e,color:#000
+```
+
+```diff
+- import { initDb, createClient } from "supahub";
+- await initDb({ schema: mySchema });
+- const supabase = createClient();
++ import { createClient } from "@supabase/supabase-js";
++ const supabase = createClient(url, key);
+```
+
+Everything else — every `.from().select().eq()`, every `.upsert()`, every `.rpc()` — stays the same.
+
 ## What is this?
 
 supahub lets you replace `@supabase/supabase-js` with a local SQLite database that runs entirely in your browser. Your existing Supabase queries keep working — no code changes needed in your service layer.
@@ -25,11 +99,12 @@ Everything else stays the same. Your `.from().select().eq().order()` chains, you
 
 ## Why?
 
+- **Unlimited projects** — no Supabase free tier limits
 - **Free forever** — no server, no database bills, no rate limits
 - **Offline-first** — works without internet, data lives in your browser
 - **Private** — your data never leaves your device (unless you sync it)
 - **Fast** — SQLite is faster than network round-trips to Supabase
-- **Zero migration effort** — same API, swap one import
+- **Zero migration effort** — same API, swap one import when you're ready to scale
 
 ## How it works
 
