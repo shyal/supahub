@@ -1,0 +1,32 @@
+{
+  "name": "supahub",
+  "version": "0.1.0",
+  "description": "Drop-in Supabase replacement backed by SQLite WASM. Same API, zero backend, free forever.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["supabase", "sqlite", "wasm", "opfs", "offline-first", "local-first"],
+  "author": "shyal",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shyal/supahub"
+  },
+  "dependencies": {
+    "sql.js": "^1.12.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
