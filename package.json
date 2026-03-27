@@ -11,10 +11,11 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": ["dist", "wasm/sql-wasm.wasm", "scripts/copy-wasm.js"],
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "postinstall": "node scripts/copy-wasm.js"
   },
   "keywords": ["supabase", "sqlite", "wasm", "opfs", "offline-first", "local-first"],
   "author": "shyal",
