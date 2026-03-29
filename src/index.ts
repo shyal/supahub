@@ -7,5 +7,5 @@ export type { SupahubClient, SupahubClientOptions, RpcHandler } from "./client.j
 export { QueryBuilder, configureColumns } from "./query-builder.js";
 export type { ColumnConfig } from "./query-builder.js";
 
-export { configure as configureSync, push, pull, schedulePush, setupAutoSync, getSyncStatus } from "./github-sync.js";
+export { configure as configureSync, push, pull, schedulePush, setupAutoSync, getSyncStatus, markDirty, isDirty } from "./github-sync.js";
 export type { GitHubSyncOptions } from "./github-sync.js";

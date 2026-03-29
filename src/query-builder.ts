@@ -1,4 +1,5 @@
 import { getDb, save } from "./db.js";
+import { markDirty } from "./github-sync.js";
 
 type Row = Record<string, unknown>;
 type QueryResult<T> = { data: T; error: null } | { data: null; error: Error };
@@ -274,6 +275,7 @@ export class QueryBuilder {
       }
     }
 
+    markDirty();
     save();
 
     if (this._returnData) {
@@ -325,6 +327,7 @@ export class QueryBuilder {
       }
     }
 
+    markDirty();
     save();
 
     if (this._returnData) {
@@ -347,6 +350,7 @@ export class QueryBuilder {
     const sql = `UPDATE "${this._table}" SET ${setParts}${whereSql}`;
     getDb().run(sql, [...vals, ...whereParams] as never);
 
+    markDirty();
     save();
     return { data: null, error: null };
   }
@@ -358,6 +362,7 @@ export class QueryBuilder {
     const sql = `DELETE FROM "${this._table}"${whereSql}`;
     getDb().run(sql, params as never);
 
+    markDirty();
     save();
     return { data: null, error: null };
   }

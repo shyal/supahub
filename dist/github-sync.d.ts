@@ -1,3 +1,5 @@
+export declare function markDirty(): void;
+export declare function isDirty(): boolean;
 export interface GitHubSyncOptions {
     /** GitHub PAT for API access. */
     token: string;
