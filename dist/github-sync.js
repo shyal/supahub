@@ -54,13 +54,13 @@ function headers() {
         "X-GitHub-Api-Version": "2022-11-28",
     };
 }
-export async function push() {
+export async function push(opts) {
     const meta = getMeta();
     if (!meta.repo || !currentToken)
         return { success: false, error: "Not configured" };
     // Skip push if nothing changed locally — prevents stale data from
     // overwriting remote changes (e.g. Python script backfills).
-    if (!_dirty) {
+    if (!_dirty && !opts?.force) {
         return { success: true };
     }
     try {

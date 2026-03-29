@@ -5,6 +5,7 @@ let db: Database | null = null;
 let sqlPromise: ReturnType<typeof initSqlJs> | null = null;
 let dbFilename = "supahub.sqlite";
 let onSave: (() => void) | null = null;
+let configuredWasmUrl = "/sql-wasm.wasm";
 
 export interface InitOptions {
   /** Path or URL to sql-wasm.wasm file. Default: "/sql-wasm.wasm" */
@@ -29,11 +30,11 @@ function getSql(wasmUrl: string) {
 export async function initDb(opts: InitOptions = {}): Promise<void> {
   if (db) return;
 
-  const wasmUrl = opts.wasmUrl ?? "/sql-wasm.wasm";
+  configuredWasmUrl = opts.wasmUrl ?? "/sql-wasm.wasm";
   dbFilename = opts.filename ?? "supahub.sqlite";
   onSave = opts.onSave ?? null;
 
-  const SQL = await getSql(wasmUrl);
+  const SQL = await getSql(configuredWasmUrl);
   const existing = await readDatabase(dbFilename);
 
   if (existing) {
@@ -92,7 +93,7 @@ export function exportBytes(): Uint8Array {
 }
 
 export async function importBytes(data: Uint8Array): Promise<void> {
-  const SQL = await getSql("/sql-wasm.wasm");
+  const SQL = await getSql(configuredWasmUrl);
   if (db) db.close();
   db = new SQL.Database(data);
   await save();

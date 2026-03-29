@@ -16,7 +16,9 @@ export declare function getSyncStatus(): {
     lastPushAt: string | null;
     lastPullAt: string | null;
 };
-export declare function push(): Promise<{
+export declare function push(opts?: {
+    force?: boolean;
+}): Promise<{
     success: boolean;
     error?: string;
 }>;

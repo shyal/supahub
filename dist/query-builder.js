@@ -1,4 +1,5 @@
 import { getDb, save } from "./db.js";
+import { markDirty } from "./github-sync.js";
 let jsonColumns = new Set();
 let boolColumns = new Set();
 /** Configure which columns need JSON parsing or boolean conversion. */
@@ -221,6 +222,7 @@ export class QueryBuilder {
                     results.push(inserted);
             }
         }
+        markDirty();
         save();
         if (this._returnData) {
             if (this._singleReturn) {
@@ -264,6 +266,7 @@ export class QueryBuilder {
                     results.push(inserted);
             }
         }
+        markDirty();
         save();
         if (this._returnData) {
             if (this._singleReturn) {
@@ -281,6 +284,7 @@ export class QueryBuilder {
         const { sql: whereSql, params: whereParams } = this._buildWhere();
         const sql = `UPDATE "${this._table}" SET ${setParts}${whereSql}`;
         getDb().run(sql, [...vals, ...whereParams]);
+        markDirty();
         save();
         return { data: null, error: null };
     }
@@ -288,6 +292,7 @@ export class QueryBuilder {
         const { sql: whereSql, params } = this._buildWhere();
         const sql = `DELETE FROM "${this._table}"${whereSql}`;
         getDb().run(sql, params);
+        markDirty();
         save();
         return { data: null, error: null };
     }

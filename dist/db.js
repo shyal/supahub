@@ -4,6 +4,7 @@ let db = null;
 let sqlPromise = null;
 let dbFilename = "supahub.sqlite";
 let onSave = null;
+let configuredWasmUrl = "/sql-wasm.wasm";
 function getSql(wasmUrl) {
     if (!sqlPromise) {
         sqlPromise = initSqlJs({
@@ -15,10 +16,10 @@ function getSql(wasmUrl) {
 export async function initDb(opts = {}) {
     if (db)
         return;
-    const wasmUrl = opts.wasmUrl ?? "/sql-wasm.wasm";
+    configuredWasmUrl = opts.wasmUrl ?? "/sql-wasm.wasm";
     dbFilename = opts.filename ?? "supahub.sqlite";
     onSave = opts.onSave ?? null;
-    const SQL = await getSql(wasmUrl);
+    const SQL = await getSql(configuredWasmUrl);
     const existing = await readDatabase(dbFilename);
     if (existing) {
         db = new SQL.Database(existing);
@@ -65,7 +66,7 @@ export function exportBytes() {
     return getDb().export();
 }
 export async function importBytes(data) {
-    const SQL = await getSql("/sql-wasm.wasm");
+    const SQL = await getSql(configuredWasmUrl);
     if (db)
         db.close();
     db = new SQL.Database(data);
